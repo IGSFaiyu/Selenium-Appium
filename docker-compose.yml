@@ -1,0 +1,32 @@
+version: "3"
+services:
+  selenium:
+    image: selenium/standalone-chrome
+    ports:
+      - "4444:4444"
+  
+  appium:
+    image: appium/appium
+    container_name: appium-container
+    privileged: true
+    volumes:
+      - "//./pipe/docker_engine://./pipe/docker_engine"
+      - "/dev/bus/usb:/dev/bus/usb"
+      - "${USERPROFILE}\\.android:/root/.android"  # 注意转义
+      - "/tmp/.X11-unix:/tmp/.X11-unix"  # 新增X11挂载
+    environment:
+      - ANDROID_HOME=/opt/android
+      - ADB_SERVER_SOCKET=tcp:5037
+      - ADB_VENDOR_KEYS=/root/.android/adbkey
+    ports:
+      - "5037:5037"
+      - "4723:4723"
+    devices:
+      - "/dev/kvm:/dev/kvm"  # 新增设备
+    command: >
+      sh -c "
+      cd /home/androidusr &&
+      wget https://storage.googleapis.com/chrome-for-testing-public/${chrome_version}/linux64/chromedriver-linux64.zip &&
+      unzip chromedriver-linux64.zip &&
+      appium
+      "

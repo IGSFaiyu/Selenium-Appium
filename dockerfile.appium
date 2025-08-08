@@ -1,0 +1,7 @@
+# 使用官方Appium基础镜像
+FROM appium/appium:latest
+
+# 下载并安装指定版本的ChromeDriver
+RUN cd /home/androidusr && \
+    wget https://storage.googleapis.com/chrome-for-testing-public/$CHROMEDRIVER_VERSION/linux64/chromedriver-linux64.zip && \
+    unzip chromedriver-linux64.zip 
